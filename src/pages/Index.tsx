@@ -94,28 +94,25 @@ const Index = () => {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     
-    // Prepare form data for FormSubmit
-    const formData = new FormData();
-    formData.append('name', `${data.firstName} ${data.lastName}`);
-    formData.append('company', data.company);
-    formData.append('email', data.email);
-    formData.append('phone', data.phone);
-    formData.append('projectType', data.projectType);
-    formData.append('message', data.message);
-    
     try {
-      const response = await fetch('https://formsubmit.co/novawaresw@gmail.com', {
+      const response = await fetch('/api/send-email', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
       
-      if (response.ok) {
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
         toast.success("Formulário enviado com sucesso! Entraremos em contato em breve.");
         reset();
       } else {
-        toast.error("Erro ao enviar formulário. Tente novamente.");
+        toast.error(result.error || "Erro ao enviar formulário. Tente novamente.");
       }
     } catch (error) {
+      console.error('Error submitting form:', error);
       toast.error("Erro ao enviar formulário. Tente novamente.");
     }
     
