@@ -29,9 +29,13 @@ export default async function handler(req, res) {
     }
 
     // Send email using Resend
+    // In test mode, Resend only allows sending to the account owner's email
+    // Change this to your business email after verifying your domain
+    const recipientEmail = process.env.RECIPIENT_EMAIL || 'igorcastilhos2010@hotmail.com';
+
     const { data, error } = await resend.emails.send({
       from: 'Novaware Orçamentos <onboarding@resend.dev>',
-      to: ['novawaresw@gmail.com'],
+      to: [recipientEmail],
       replyTo: email,
       subject: `Novo Orçamento de ${firstName} ${lastName} - ${projectType} - ${company}`,
       html: `
